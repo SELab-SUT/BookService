@@ -1,0 +1,43 @@
+from flask import Flask, request
+from flask.json import jsonify
+from sqlalchemy.exc import IntegrityError
+from http import HTTPStatus
+from models import *
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False	# To silence a warning
+
+@app.before_first_request
+def setup_db():
+	db.init_app(app)
+	db.create_all()
+
+
+@app.route('/books/create', methods=['POST'])
+def create_book():
+	data = request.json
+	if 'book_id' in data and Transaction.query.filter_by(book_id=data['book_id']).first():
+		return {'message': 'Error: Book already exists!'}, HTTPStatus.CONFLICT
+
+	transaction = Transaction(admin=data.get('admin'),
+								transaction_type=TransactionType['CREATE'],
+								book_id=data.get('book_id'),
+								book_title=data.get('book_title'),
+								book_author=data.get('book_author'),
+								book_price=data.get('book_price'))
+	try:
+		db.session.add(transaction)
+		db.session.commit()
+		return {'message': 'Ok'}, HTTPStatus.CREATED
+	except IntegrityError:
+		return {'message': 'Bad Request'}, HTTPStatus.BAD_REQUEST
+
+
+@app.route('/books/log', methods=['GET'])
+def show_transactions():
+	return jsonify([tr.to_dict() for tr in Transaction.query.all()])
+
+
+if __name__ == '__main__':
+	app.run()
