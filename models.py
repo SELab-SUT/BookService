@@ -24,7 +24,9 @@ class Transaction(db.Model):
 
 	def to_dict(self):
 		vals = vars(self)
-		return {attr: str(vals[attr]) for attr in vals if 'instance_state' not in attr}
+		dic = {attr: vals[attr] for attr in vals if 'instance_state' not in attr}
+		dic['transaction_type'] = str(dic['transaction_type'])
+		return dic
 
 class Book(db.Model):
 	__bind_key__ = 'books'
@@ -37,4 +39,4 @@ class Book(db.Model):
 
 	def to_dict(self):
 		vals = vars(self)
-		return {attr: str(vals[attr]) for attr in vals if 'instance_state' not in attr}
+		return {attr: vals[attr] for attr in vals if 'instance_state' not in attr}
