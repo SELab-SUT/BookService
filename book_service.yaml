@@ -182,12 +182,9 @@ definitions:
   Transaction:
     type: object
     required:
-      - id
       - admin
       - book_id
     properties:
-      id:
-        type: integer
       admin:
         type: string
       book_id:
