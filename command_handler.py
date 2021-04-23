@@ -47,6 +47,7 @@ def update_book(book_id):
 								transaction_type=TransactionType['UPDATE'],
 								book_id=book_id,
 								book_title=data.get('book_title'),
+								book_category=data.get('book_category'),
 								book_author=data.get('book_author'),
 								book_price=data.get('book_price'))
 

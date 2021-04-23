@@ -2,11 +2,13 @@ from flask import Flask, request
 from flask.json import jsonify
 from models import *
 from command_handler import command_handler
+from query_handler import query_handler
 
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.register_blueprint(command_handler)
+app.register_blueprint(query_handler)
 app.config['SQLALCHEMY_BINDS'] = {
 	'transactions': 'sqlite:///transactions.sqlite3',
 	'books': 'sqlite:///books.sqlite3'

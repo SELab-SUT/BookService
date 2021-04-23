@@ -34,3 +34,7 @@ class Book(db.Model):
 	author = db.Column(db.String(80))
 	category = db.Column(db.String(80))
 	price = db.Column(db.Integer)
+
+	def to_dict(self):
+		vals = vars(self)
+		return {attr: str(vals[attr]) for attr in vals if 'instance_state' not in attr}
