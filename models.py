@@ -10,6 +10,8 @@ class TransactionType(enum.Enum):
 	DELETE = 2
 
 class Transaction(db.Model):
+	__bind_key__ = 'transactions'
+
 	id = db.Column(db.Integer, primary_key=True)
 	timestamp = db.Column(db.DateTime, server_default=db.func.now())
 	admin = db.Column(db.String(15), nullable=False)
@@ -22,3 +24,11 @@ class Transaction(db.Model):
 	def to_dict(self):
 		vals = vars(self)
 		return {attr: str(vals[attr]) for attr in vals if 'instance_state' not in attr}
+
+class Book(db.Model):
+	__bind_key__ = 'books'
+	
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(80))
+	author = db.Column(db.String(80))
+	price = db.Column(db.Integer)

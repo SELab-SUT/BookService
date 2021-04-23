@@ -3,9 +3,14 @@ from flask.json import jsonify
 from sqlalchemy.exc import IntegrityError
 from http import HTTPStatus
 from models import *
+from event_handler import bus
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+app.config['SQLALCHEMY_BINDS'] = {
+	'transactions': 'sqlite:///transactions.sqlite3',
+	'books': 'sqlite:///books.sqlite3'
+}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False	# To silence a warning
 
 @app.before_first_request
@@ -30,6 +35,7 @@ def create_book():
 	try:
 		db.session.add(transaction)
 		db.session.commit()
+		bus.emit('create:book', transaction)
 		return {'message': 'Ok'}, HTTPStatus.CREATED
 	except IntegrityError:
 		return {'message': 'Bad Request'}, HTTPStatus.BAD_REQUEST
@@ -52,6 +58,7 @@ def update_book(book_id):
 	try:
 		db.session.add(transaction)
 		db.session.commit()
+		bus.emit('update:book', transaction)
 		return {'message': 'Ok'}, HTTPStatus.OK
 	except IntegrityError:
 		return {'message': 'Bad Request'}, HTTPStatus.BAD_REQUEST
@@ -71,6 +78,7 @@ def delete_book(book_id):
 	try:
 		db.session.add(transaction)
 		db.session.commit()
+		bus.emit('delete:book', transaction)
 		return {'message': 'Ok'}, HTTPStatus.OK
 	except IntegrityError:
 		return {'message': 'Bad Request'}, HTTPStatus.BAD_REQUEST
