@@ -18,6 +18,7 @@ class Transaction(db.Model):
 	transaction_type = db.Column(db.Enum(TransactionType), nullable=False)
 	book_id = db.Column(db.Integer, nullable=False)
 	book_title = db.Column(db.String(80))
+	book_category = db.Column(db.String(80))
 	book_author = db.Column(db.String(80))
 	book_price = db.Column(db.Integer)
 
@@ -31,4 +32,5 @@ class Book(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.String(80))
 	author = db.Column(db.String(80))
+	category = db.Column(db.String(80))
 	price = db.Column(db.Integer)
