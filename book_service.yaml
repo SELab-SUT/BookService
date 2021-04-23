@@ -1,0 +1,202 @@
+swagger: "2.0"
+info:
+  description: "This is a microservice that creates, updates, deletes, and retrieves books."
+  version: "1.0.0"
+  title: "Book Service"
+host: "127.0.0.1:1000"
+basePath: "/"
+tags:
+- name: "books"
+  description: "Operations on books"
+schemes:
+- "http"
+paths:
+  /books/create:
+    post:
+      tags:
+      - "books"
+      summary: Create new books
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Transaction"
+      responses:
+        "201":
+          description: "Created"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        "400":
+          description: "Bad request"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        "409":
+          description: "Book already exists"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /books/update/{book_id}:
+    put:
+      tags:
+      - "books"
+      summary: "Update book information"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: book_id
+        type: integer
+        required: true
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: "#/definitions/Transaction"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        "400":
+          description: "Bad request"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        "404":
+          description: "Book not found"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /books/delete/{book_id}:
+    put:
+      tags:
+      - "books"
+      summary: "Delete books"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        name: book_id
+        type: integer
+        required: true
+      - in: body
+        name: body
+        required: True
+        schema:
+          $ref: "#/definitions/Transaction"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        "400":
+          description: "Bad request"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        "404":
+          description: "Book not found"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /books/log:
+    get:
+      tags:
+      - "books"
+      summary: "Show transaction log"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: array
+            items:
+                $ref: "#/definitions/Transaction"
+  /books/q:
+    get:
+      tags:
+      - "books"
+      summary: "Show a list of books"
+      produces:
+      - "application/json"
+      parameters:
+      - in: query
+        name: title
+        type: string
+      - in: query
+        name: category
+        type: string
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            type: array
+            items:
+                $ref: "#/definitions/Book"
+definitions:
+  Book:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      category:
+        type: string
+      author:
+        type: string
+      price:
+        type: integer
+  Transaction:
+    type: object
+    required:
+      - id
+      - admin
+      - book_id
+    properties:
+      id:
+        type: integer
+      admin:
+        type: string
+      book_id:
+        type: integer
+      book_title:
+        type: string
+      book_category:
+        type: string
+      book_author:
+        type: string
+      book_price:
+        type: integer
