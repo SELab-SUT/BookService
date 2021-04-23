@@ -8,7 +8,7 @@ query_handler = Blueprint('Query Handler', __name__)
 def get_books():
 	query = Book.query
 	if 'title' in request.args:
-		query = query.filter_by(title=request.args['title'])
+		query = query.filter(Book.title.ilike("%" + request.args['title'] + "%"))
 	if 'category' in request.args:
 		query = query.filter_by(category=request.args['category'])
 
